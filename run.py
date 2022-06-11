@@ -5,7 +5,6 @@ import vk_api
 from vk_api.longpoll import VkLongPoll
 
 from bot.utils import handlers_list
-import bot.handlers
 
 load_dotenv()
 
@@ -25,16 +24,16 @@ def main():
     )
 
     try:
-        vk_session.auth(token_only=True)
+        vk_session.auth()
     except vk_api.AuthError as error_msg:
         print(error_msg)
         return
 
     long_poll = VkLongPoll(vk_session)
-
+    client = vk_session.get_api()
     for event in long_poll.listen():
         for handler in handlers_list:
-            handler(event)
+            handler(client, event)
 
 
 if __name__ == '__main__':
